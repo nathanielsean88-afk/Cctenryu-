@@ -1,0 +1,92 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  MEMBER
+  ADMIN
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum Division {
+  CREATIVE
+  TECHNOLOGY
+  BUSINESS
+  OPERATIONS
+  CONTENT
+  FINANCE
+}
+
+model User {
+  id          String   @id @default(cuid())
+  clerkId     String   @unique
+  email       String   @unique
+  name        String
+  imageUrl    String?
+  role        Role     @default(MEMBER)
+  division    Division?
+  bio         String?
+  portfolio   String?
+  joinedAt    DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  application Application?
+
+  @@map("users")
+}
+
+model Application {
+  id           String            @id @default(cuid())
+  // Personal Info
+  firstName    String
+  lastName     String
+  email        String
+  phone        String
+  birthDate    String
+  city         String
+  // Background
+  profession   String
+  institution  String
+  division     Division
+  // Motivation
+  motivation   String            @db.Text
+  contribution String            @db.Text
+  referral     String
+  portfolio    String?
+  // Status
+  status       ApplicationStatus @default(PENDING)
+  adminNote    String?
+  // Relations
+  userId       String?           @unique
+  user         User?             @relation(fields: [userId], references: [id])
+  reviewedBy   String?           // clerkId of admin who reviewed
+  reviewedAt   DateTime?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@map("applications")
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  content   String   @db.Text
+  authorId  String   // clerkId of admin
+  pinned    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("announcements")
+}
