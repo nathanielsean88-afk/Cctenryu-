@@ -19,10 +19,18 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
     const updated = updateApplicationStatus(params.id, status, adminNote ?? '', userId)
 
-    if (status === 'APPROVED' && (application as any).userId) {
+    if (status === 'APPROVED') {
       const appUserId = (application as any).userId
-      await setUserRole(appUserId, 'MEMBER')
-      updateMember(appUserId, { role: 'MEMBER', division: application.division })
+      if (appUserId) {
+        // Update di JSON storage
+        updateMember(appUserId, { role: 'MEMBER' })
+        // Update di Clerk supaya sessionClaims ikut update
+        try {
+          await setUserRole(appUserId, 'MEMBER')
+        } catch (e) {
+          console.error('Failed to update Clerk role:', e)
+        }
+      }
     }
 
     return NextResponse.json({ success: true, application: updated })

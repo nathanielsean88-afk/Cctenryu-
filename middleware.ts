@@ -1,6 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
-import { getMemberByClerkId, getApplications } from '@/lib/storage'
 
 const isPublicRoute = createRouteMatcher([
   '/',
@@ -16,7 +15,7 @@ const isAdminRoute = createRouteMatcher(['/admin(.*)'])
 const isMemberRoute = createRouteMatcher(['/member(.*)'])
 
 export default clerkMiddleware(async (auth, req) => {
-  const { userId } = await auth()
+  const { userId, sessionClaims } = await auth()
 
   if (isPublicRoute(req)) return NextResponse.next()
 
@@ -26,17 +25,14 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.redirect(loginUrl)
   }
 
-  // Baca role langsung dari JSON storage (bukan sessionClaims)
-  const member = getMemberByClerkId(userId)
-  const role = member?.role ?? null
+  // Baca role dari Clerk session (tidak pakai fs/storage di edge)
+  const role = (sessionClaims?.metadata as any)?.role as string | undefined
 
-  // Admin routes
   if (isAdminRoute(req)) {
     if (role !== 'ADMIN') return NextResponse.redirect(new URL('/menunggu', req.url))
     return NextResponse.next()
   }
 
-  // Member routes
   if (isMemberRoute(req)) {
     if (role === 'ADMIN') return NextResponse.next()
     if (role !== 'MEMBER') return NextResponse.redirect(new URL('/menunggu', req.url))
