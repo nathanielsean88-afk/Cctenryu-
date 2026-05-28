@@ -283,7 +283,7 @@ export default function AnnouncementsClient({ announcements, isAdmin, user }: Pr
               </h2>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 36, paddingBottom: 28, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                <div style={{ display: 'flex', align: 'center', gap: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(139,26,26,0.3)', border: '1px solid rgba(201,169,110,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Cormorant Garamond', serif", fontSize: 12, color: 'var(--gold)', flexShrink: 0 }}>
                     {selected.authorName[0]?.toUpperCase()}
                   </div>
