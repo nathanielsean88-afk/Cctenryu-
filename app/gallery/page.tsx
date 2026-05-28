@@ -8,8 +8,13 @@ export default function GalleryPage() {
   const members = getMembers()
     .filter(m => m.role === 'MEMBER')
     .map(m => ({
-      ...m,
+      id: m.id,
+      name: m.name,
+      imageUrl: m.imageUrl || null,
+      division: m.division || null,
+      bio: m.bio || null,
       joinedAt: new Date(m.joinedAt),
+      application: null,
     }))
 
   return (
