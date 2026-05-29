@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --crimson: #8B1A1A;
+    --crimson-soft: #A52A2A;
+    --crimson-light: #C0392B;
+    --crimson-glow: rgba(139,26,26,0.35);
+    --crimson-subtle: rgba(139,26,26,0.12);
+    --gold: #C9A96E;
+    --gold-light: #E8C88A;
+    --obsidian: #080808;
+    --dark: #111111;
+    --dark-2: #181818;
+    --dark-3: #222222;
+    --smoke: #3a3a3a;
+    --mist: #888888;
+    --pearl: #c8c8c8;
+    --snow: #f0ede8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--obsidian);
+    color: var(--snow);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--crimson); color: var(--snow); }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--obsidian); }
+  ::-webkit-scrollbar-thumb { background: var(--smoke); border-radius: 3px; }
+}
+
+@layer components {
+  .noise-overlay {
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.6;
+  }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: var(--crimson); color: var(--snow); border: none;
+    padding: 14px 32px;
+    font-family: 'Cinzel', serif; font-size: 11px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    cursor: pointer; transition: all 0.3s; border-radius: 2px;
+  }
+  .btn-primary:hover {
+    background: var(--crimson-light);
+    box-shadow: 0 4px 30px var(--crimson-glow);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: transparent; color: var(--pearl);
+    border: 1px solid rgba(200,200,200,0.2);
+    padding: 14px 32px;
+    font-family: 'Cinzel', serif; font-size: 11px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    cursor: pointer; transition: all 0.3s; border-radius: 2px;
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  .form-input {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 2px; padding: 14px 18px;
+    color: var(--snow); font-family: 'EB Garamond', serif;
+    font-size: 16px; transition: all 0.3s; outline: none; width: 100%;
+  }
+  .form-input:focus {
+    border-color: var(--crimson-soft);
+    box-shadow: 0 0 0 3px rgba(139,26,26,0.1);
+  }
+
+  .gold-divider {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 24px auto;
+  }
+
+  .section-eyebrow {
+    font-family: 'Cinzel', serif; font-size: 10px;
+    letter-spacing: 0.5em; color: var(--gold);
+    text-transform: uppercase;
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+  }
+  .section-eyebrow::before, .section-eyebrow::after {
+    content: ''; display: block; width: 30px; height: 1px;
+    background: var(--gold); opacity: 0.5;
+  }
+
+  .badge-pending {
+    background: rgba(201,169,110,0.1); border: 1px solid rgba(201,169,110,0.3);
+    color: var(--gold); padding: 3px 10px;
+    font-family: 'Cinzel', serif; font-size: 9px;
+    letter-spacing: 0.1em; text-transform: uppercase; border-radius: 2px; display: inline-block;
+  }
+  .badge-approved {
+    background: rgba(34,139,34,0.1); border: 1px solid rgba(34,139,34,0.3);
+    color: #6dbf6d; padding: 3px 10px;
+    font-family: 'Cinzel', serif; font-size: 9px;
+    letter-spacing: 0.1em; text-transform: uppercase; border-radius: 2px; display: inline-block;
+  }
+  .badge-rejected {
+    background: rgba(139,26,26,0.15); border: 1px solid rgba(139,26,26,0.3);
+    color: var(--crimson-light); padding: 3px 10px;
+    font-family: 'Cinzel', serif; font-size: 9px;
+    letter-spacing: 0.1em; text-transform: uppercase; border-radius: 2px; display: inline-block;
+  }
+
+  /* ── RESPONSIVE HELPERS ── */
+  .container {
+    width: 100%; max-width: 1200px; margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  @media (min-width: 768px) {
+    .container { padding: 0 40px; }
+  }
+
+  @media (min-width: 1200px) {
+    .container { padding: 0 60px; }
+  }
+}
+
+@layer utilities {
+  .font-cormorant { font-family: 'Cormorant Garamond', Georgia, serif; }
+  .font-cinzel { font-family: 'Cinzel', serif; }
+  .font-garamond { font-family: 'EB Garamond', Georgia, serif; }
+  .animate-fade-up { animation: fadeUp 0.8s ease forwards; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
