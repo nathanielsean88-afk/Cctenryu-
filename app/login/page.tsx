@@ -96,8 +96,6 @@ export default function LoginPage() {
           </p>
 
           <SignIn
-              afterSignInUrl="/menunggu"
-              fallbackRedirectUrl="/menunggu"
             appearance={{
               elements: {
                 rootBox: { width: '100%' },

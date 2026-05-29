@@ -9,8 +9,6 @@ export default function Navbar() {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const { user } = useUser()
-
-  // Cek role dari public metadata Clerk
   const role = (user?.publicMetadata?.role as string) ?? null
   const isApproved = role === 'MEMBER' || role === 'ADMIN'
 
@@ -20,13 +18,11 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const linkStyle = (active: boolean): React.CSSProperties => ({
-    fontFamily: "'Cinzel', serif",
-    fontSize: 11,
-    letterSpacing: '0.2em',
-    textTransform: 'uppercase',
+  const linkStyle = (href: string): React.CSSProperties => ({
+    fontFamily: "'Cinzel', serif", fontSize: 11,
+    letterSpacing: '0.2em', textTransform: 'uppercase',
     textDecoration: 'none',
-    color: active ? 'var(--gold)' : 'var(--pearl)',
+    color: pathname === href || pathname.startsWith(href + '/') ? 'var(--gold)' : 'var(--pearl)',
     transition: 'color 0.3s',
   })
 
@@ -42,8 +38,8 @@ export default function Navbar() {
     }}>
       {/* Logo */}
       <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 14, textDecoration: 'none' }}>
-        <div style={{ width: 46, height: 46, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'radial-gradient(circle, rgba(139,26,26,0.25) 0%, transparent 70%)', border: '1px solid rgba(201,169,110,0.3)', overflow: 'hidden', position: 'relative', flexShrink: 0 }}>
-          <Image src="/logo.png" alt="Tenryu Circle Logo" width={40} height={40} style={{ objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(201,169,110,0.4))' }} />
+        <div style={{ width: 46, height: 46, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'radial-gradient(circle, rgba(139,26,26,0.25) 0%, transparent 70%)', border: '1px solid rgba(201,169,110,0.3)', overflow: 'hidden', flexShrink: 0 }}>
+          <Image src="/logo.png" alt="Tenryu" width={40} height={40} style={{ objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(201,169,110,0.4))' }} />
         </div>
         <div>
           <div style={{ fontFamily: "'Cinzel', serif", fontSize: 16, fontWeight: 600, letterSpacing: '0.15em', color: 'var(--snow)' }}>TENRYU</div>
@@ -51,51 +47,28 @@ export default function Navbar() {
         </div>
       </Link>
 
-      {/* Nav */}
       <nav style={{ display: 'flex', alignItems: 'center', gap: 36 }}>
+        {/* Selalu tampil */}
+        <Link href="/" style={linkStyle('/')}>Beranda</Link>
+        <Link href="/gallery" style={linkStyle('/gallery')}>Anggota</Link>
 
-        {/* Beranda & Gallery — selalu tampil */}
-        <Link href="/" style={linkStyle(pathname === '/')}>Beranda</Link>
-        <Link href="/gallery" style={linkStyle(pathname === '/gallery')}>Anggota</Link>
-
-        {/* ── Belum login: tampilkan Pendaftaran saja ── */}
+        {/* Belum login atau belum approved → tampil Pendaftaran */}
         <SignedOut>
-          <Link href="/pendaftaran" style={linkStyle(pathname === '/pendaftaran')}>
-            Pendaftaran
-          </Link>
-          {/* TIDAK ada tombol Login/Register untuk user belum login */}
-          {/* Mereka harus daftar dulu, tunggu ACC, baru bisa login */}
+          <Link href="/pendaftaran" style={linkStyle('/pendaftaran')}>Pendaftaran</Link>
         </SignedOut>
-
-        {/* ── Sudah login ── */}
         <SignedIn>
-          {/* Belum di-ACC: tampilkan Pendaftaran + Status */}
-          {!isApproved && (
-            <>
-              <Link href="/pendaftaran" style={linkStyle(pathname === '/pendaftaran')}>
-                Pendaftaran
-              </Link>
-              <Link href="/menunggu" style={linkStyle(pathname === '/menunggu')}>
-                Status
-              </Link>
-            </>
-          )}
+          {!isApproved && <Link href="/pendaftaran" style={linkStyle('/pendaftaran')}>Pendaftaran</Link>}
+          {isApproved && <Link href="/member" style={linkStyle('/member')}>Announcement</Link>}
+          {role === 'ADMIN' && <Link href="/admin" style={linkStyle('/admin')}>Admin</Link>}
+        </SignedIn>
 
-          {/* Sudah di-ACC: tampilkan menu member */}
-          {isApproved && (
-            <Link href="/member" style={linkStyle(pathname.startsWith('/member'))}>
-              Dashboard
-            </Link>
-          )}
-
-          {/* Admin extra */}
-          {role === 'ADMIN' && (
-            <Link href="/admin" style={linkStyle(pathname.startsWith('/admin'))}>
-              Admin
-            </Link>
-          )}
-
-          {/* Avatar user */}
+        {/* Auth */}
+        <SignedOut>
+          <Link href="/login" style={{ fontFamily: "'Cinzel', serif", fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', textDecoration: 'none', color: 'var(--snow)', border: '1px solid var(--crimson-soft)', padding: '8px 24px', borderRadius: 2, transition: 'all 0.3s' }}>
+            Masuk
+          </Link>
+        </SignedOut>
+        <SignedIn>
           <UserButton appearance={{ elements: { avatarBox: { width: 36, height: 36, border: '1.5px solid var(--crimson)' } } }} />
         </SignedIn>
       </nav>

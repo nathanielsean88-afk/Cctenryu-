@@ -6,37 +6,43 @@ import { randomUUID } from 'crypto'
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { ccSebelumnya, alasanKeluar, alasanMasuk, tiktok, discord, whatsapp, umur, asalKota } = body
+    const { nama, ccSebelumnya, alasanKeluar, alasanMasuk, tiktok, discord, whatsapp, umur, asalKota } = body
 
-    if (!alasanMasuk || !whatsapp || !discord) {
-      return NextResponse.json({ error: 'Field wajib belum lengkap' }, { status: 400 })
+    if (!nama || !whatsapp || !discord || !alasanMasuk) {
+      return NextResponse.json({ error: 'Nama, WhatsApp, Discord, dan Alasan Masuk wajib diisi' }, { status: 400 })
     }
 
-    const { userId } = await auth()
+    // Cek duplikat via WhatsApp atau Discord
+    const existing = getApplications().find(a =>
+      (a as any).whatsapp === whatsapp || (a as any).discord === discord
+    )
+    if (existing) return NextResponse.json({ error: 'Kamu sudah pernah mendaftar!' }, { status: 409 })
 
-    const existing = userId ? getApplications().find(a => (a as any).userId === userId) : null
-    if (existing) return NextResponse.json({ error: 'Kamu sudah pernah mendaftar' }, { status: 409 })
+    const { userId } = await auth().catch(() => ({ userId: null }))
 
     const app = {
       id: randomUUID(),
-      ccSebelumnya: ccSebelumnya ?? '-',
-      alasanKeluar: alasanKeluar ?? '-',
+      nama: nama ?? '',
+      ccSebelumnya: ccSebelumnya || '-',
+      alasanKeluar: alasanKeluar || '-',
       alasanMasuk,
-      tiktok: tiktok ?? '',
+      tiktok: tiktok || '',
       discord,
       whatsapp,
-      umur: umur ?? '',
-      asalKota: asalKota ?? '',
+      umur: umur || '',
+      asalKota: asalKota || '',
       status: 'PENDING' as const,
       adminNote: '',
       reviewedBy: '',
       reviewedAt: '',
       createdAt: new Date().toISOString(),
       userId: userId ?? '',
-      // legacy fields biar tidak error
-      firstName: '', lastName: '', email: '', phone: whatsapp,
-      birthDate: '', city: asalKota ?? '', profession: '',
-      institution: '', division: 'GENERAL', motivation: alasanMasuk,
+      // legacy
+      firstName: nama?.split(' ')[0] ?? '',
+      lastName: nama?.split(' ').slice(1).join(' ') ?? '',
+      email: '', phone: whatsapp, birthDate: '',
+      city: asalKota || '', profession: '', institution: '',
+      division: 'GENERAL', motivation: alasanMasuk,
       contribution: '', referral: '', portfolio: '',
     }
 

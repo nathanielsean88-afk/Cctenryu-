@@ -1,9 +1,7 @@
 'use client'
 import Link from 'next/link'
 import Image from 'next/image'
-import { SignOutButton, useUser } from '@clerk/nextjs'
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { SignOutButton } from '@clerk/nextjs'
 
 type Status = 'PENDING' | 'APPROVED' | 'REJECTED' | null
 
@@ -16,16 +14,6 @@ type ContentItem = {
 }
 
 export default function MenungguClient({ status, hasApplied }: { status: Status; hasApplied: boolean }) {
-  const { user } = useUser()
-  const router = useRouter()
-
-  // Jika user sudah di-ACC (role MEMBER/ADMIN), langsung redirect ke member
-  const role = (user?.publicMetadata?.role as string) ?? null
-  useEffect(() => {
-    if (role === 'MEMBER' || role === 'ADMIN') {
-      router.replace('/member')
-    }
-  }, [role, router])
 
   const iconStyle = { width: 36, height: 36 }
 
@@ -52,12 +40,11 @@ export default function MenungguClient({ status, hasApplied }: { status: Status;
       icon: <svg style={iconStyle} viewBox="0 0 24 24" fill="none" stroke="#6dbf6d" strokeWidth="1.5"><polyline points="20,6 9,17 4,12"/></svg>,
       title: 'Selamat, Diterima!',
       subtitle: 'Permohonanmu telah disetujui',
-      desc: 'Kamu resmi menjadi anggota Tenryu Circle. Kamu sekarang bisa menggunakan semua fitur member termasuk login, announcement, dan dashboard.',
+      desc: 'Kamu resmi menjadi anggota Tenryu Circle. Silakan login ulang untuk mengakses dashboard member.',
       action: (
-        // Logout dulu lalu redirect ke login, supaya session Clerk refresh dengan role baru
         <SignOutButton redirectUrl="/login">
           <button style={{ background: 'var(--crimson)', color: 'var(--snow)', border: 'none', padding: '16px 48px', fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: '0.2em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: 2 }}>
-            Masuk ke Dashboard
+            Login Ulang
           </button>
         </SignOutButton>
       ),

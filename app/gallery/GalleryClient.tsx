@@ -8,7 +8,6 @@ type Member = {
   imageUrl: string | null
   division: string | null
   bio: string | null
-  role: string
   joinedAt: Date
   application: null
 }
@@ -17,6 +16,9 @@ function getInitials(name: string) {
   return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
 }
 
+// Ganti URL ini dengan link video YouTube/TikTok embed kamu
+// Contoh YouTube: https://www.youtube.com/embed/VIDEO_ID
+// Contoh TikTok: https://www.tiktok.com/embed/VIDEO_ID
 const GALLERY_VIDEO_URL = ''
 
 export default function GalleryClient({ members }: { members: Member[] }) {
@@ -37,7 +39,7 @@ export default function GalleryClient({ members }: { members: Member[] }) {
         </p>
       </div>
 
-      {/* VIDEO SLOT */}
+      {/* ── VIDEO SLOT ── */}
       <div style={{ maxWidth: 900, margin: '0 auto 60px', padding: '0 60px' }}>
         <div style={{ position: 'relative', borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(201,169,110,0.2)', background: 'var(--dark-2)', aspectRatio: '16/9' }}>
           {GALLERY_VIDEO_URL ? (
@@ -48,6 +50,7 @@ export default function GalleryClient({ members }: { members: Member[] }) {
               allowFullScreen
             />
           ) : (
+            /* Placeholder kalau belum ada video */
             <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, position: 'absolute', inset: 0 }}>
               <div style={{ width: 64, height: 64, borderRadius: '50%', border: '1px solid rgba(201,169,110,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="1.5">
@@ -65,7 +68,7 @@ export default function GalleryClient({ members }: { members: Member[] }) {
         </div>
       </div>
 
-      {/* GRID MEMBER */}
+      {/* ── GRID MEMBER ── */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
@@ -83,33 +86,26 @@ export default function GalleryClient({ members }: { members: Member[] }) {
           <div
             key={m.id}
             onClick={() => setSelected(m)}
-            style={{ background: 'var(--dark-2)', border: `1px solid ${m.role === 'ADMIN' ? 'rgba(201,169,110,0.25)' : 'rgba(255,255,255,0.06)'}`, borderRadius: 3, overflow: 'hidden', cursor: 'pointer', transition: 'all 0.4s', position: 'relative' }}
+            style={{ background: 'var(--dark-2)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 3, overflow: 'hidden', cursor: 'pointer', transition: 'all 0.4s' }}
             onMouseEnter={e => {
               const el = e.currentTarget as HTMLDivElement
-              el.style.borderColor = 'rgba(201,169,110,0.4)'
+              el.style.borderColor = 'rgba(201,169,110,0.3)'
               el.style.transform = 'translateY(-4px)'
               el.style.boxShadow = '0 20px 60px rgba(0,0,0,0.5)'
             }}
             onMouseLeave={e => {
               const el = e.currentTarget as HTMLDivElement
-              el.style.borderColor = m.role === 'ADMIN' ? 'rgba(201,169,110,0.25)' : 'rgba(255,255,255,0.06)'
+              el.style.borderColor = 'rgba(255,255,255,0.06)'
               el.style.transform = 'translateY(0)'
               el.style.boxShadow = 'none'
             }}
           >
-            {/* Admin badge */}
-            {m.role === 'ADMIN' && (
-              <div style={{ position: 'absolute', top: 14, right: 14, zIndex: 10, background: 'rgba(139,26,26,0.9)', border: '1px solid var(--gold)', borderRadius: 2, padding: '3px 10px', fontFamily: "'Cinzel', serif", fontSize: 9, letterSpacing: '0.2em', color: 'var(--gold)', textTransform: 'uppercase', backdropFilter: 'blur(8px)' }}>
-                Admin
-              </div>
-            )}
-
             {/* Photo */}
             <div style={{ position: 'relative', height: 280, background: 'var(--dark-3)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
               {m.imageUrl ? (
                 <Image src={m.imageUrl} alt={m.name} fill style={{ objectFit: 'cover' }} />
               ) : (
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 64, fontWeight: 300, color: m.role === 'ADMIN' ? 'rgba(201,169,110,0.5)' : 'rgba(139,26,26,0.4)' }}>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 64, fontWeight: 300, color: 'rgba(139,26,26,0.4)' }}>
                   {getInitials(m.name)}
                 </div>
               )}
@@ -117,13 +113,13 @@ export default function GalleryClient({ members }: { members: Member[] }) {
             </div>
 
             {/* Body */}
-            <div style={{ padding: 24, borderTop: `1px solid ${m.role === 'ADMIN' ? 'rgba(201,169,110,0.15)' : 'rgba(255,255,255,0.05)'}` }}>
+            <div style={{ padding: 24, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
               <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 500, color: 'var(--snow)', marginBottom: 12 }}>{m.name}</div>
               {m.bio && (
                 <div style={{ fontSize: 14, color: 'var(--mist)', lineHeight: 1.7, fontStyle: 'italic', marginBottom: 12 }}>{m.bio}</div>
               )}
-              <div style={{ fontFamily: "'Cinzel', serif", fontSize: 9, letterSpacing: '0.2em', color: m.role === 'ADMIN' ? 'var(--gold)' : 'var(--smoke)', textTransform: 'uppercase' }}>
-                {m.role === 'ADMIN' ? '✦ Admin · ' : ''}Bergabung {new Date(m.joinedAt).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}
+              <div style={{ fontFamily: "'Cinzel', serif", fontSize: 9, letterSpacing: '0.2em', color: 'var(--smoke)', textTransform: 'uppercase' }}>
+                Bergabung {new Date(m.joinedAt).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}
               </div>
             </div>
           </div>
@@ -134,18 +130,12 @@ export default function GalleryClient({ members }: { members: Member[] }) {
       {selected && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)' }}
           onClick={() => setSelected(null)}>
-          <div style={{ background: 'var(--dark-2)', border: `1px solid ${selected.role === 'ADMIN' ? 'rgba(201,169,110,0.4)' : 'rgba(201,169,110,0.2)'}`, maxWidth: 480, width: '90%', maxHeight: '80vh', overflowY: 'auto', padding: 48, position: 'relative', borderRadius: 3 }}
+          <div style={{ background: 'var(--dark-2)', border: '1px solid rgba(201,169,110,0.2)', maxWidth: 480, width: '90%', maxHeight: '80vh', overflowY: 'auto', padding: 48, position: 'relative', borderRadius: 3 }}
             onClick={e => e.stopPropagation()}>
             <button onClick={() => setSelected(null)} style={{ position: 'absolute', top: 20, right: 20, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--mist)', fontSize: 20, background: 'none', border: 'none' }}>×</button>
 
-            {selected.role === 'ADMIN' && (
-              <div style={{ marginBottom: 20, display: 'inline-block', background: 'rgba(139,26,26,0.3)', border: '1px solid var(--gold)', borderRadius: 2, padding: '4px 14px', fontFamily: "'Cinzel', serif", fontSize: 9, letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase' }}>
-                Administrator
-              </div>
-            )}
-
             <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 28 }}>
-              <div style={{ width: 64, height: 64, borderRadius: '50%', border: `2px solid ${selected.role === 'ADMIN' ? 'var(--gold)' : 'var(--crimson)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: 'var(--crimson-light)', background: 'var(--dark-3)', flexShrink: 0, overflow: 'hidden', position: 'relative' }}>
+              <div style={{ width: 64, height: 64, borderRadius: '50%', border: '2px solid var(--crimson)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: 'var(--crimson-light)', background: 'var(--dark-3)', flexShrink: 0, overflow: 'hidden', position: 'relative' }}>
                 {selected.imageUrl ? <Image src={selected.imageUrl} alt={selected.name} fill style={{ objectFit: 'cover' }} /> : getInitials(selected.name)}
               </div>
               <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: 'var(--snow)' }}>{selected.name}</div>

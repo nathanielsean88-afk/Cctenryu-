@@ -5,7 +5,6 @@ import GalleryClient from './GalleryClient'
 export const dynamic = 'force-dynamic'
 
 export default function GalleryPage() {
-  // Tampilkan MEMBER dan ADMIN di galeri
   const members = getMembers()
     .filter(m => m.role === 'MEMBER' || m.role === 'ADMIN')
     .map(m => ({
@@ -14,7 +13,6 @@ export default function GalleryPage() {
       imageUrl: m.imageUrl || null,
       division: m.division || null,
       bio: m.bio || null,
-      role: m.role,
       joinedAt: new Date(m.joinedAt),
       application: null,
     }))

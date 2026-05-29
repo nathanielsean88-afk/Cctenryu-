@@ -22,9 +22,9 @@ function getInitials(name: string) {
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', href: '/member' },
-  { id: 'announcements', label: 'Announcement', href: '/member/announcements' },
   { id: 'profile', label: 'Edit Profil', href: '/member/profile' },
   { id: 'gallery', label: 'Galeri Anggota', href: '/gallery' },
+  { id: 'pendaftaran', label: 'Form Pendaftaran', href: '/pendaftaran' },
 ]
 
 export default function MemberDashboardClient({ user, announcements, members, totalMembers }: Props) {

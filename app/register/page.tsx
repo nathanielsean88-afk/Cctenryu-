@@ -34,16 +34,14 @@ export default function RegisterPage() {
             <Image src="/logo.png" alt="Tenryu Circle" width={48} height={48} style={{ objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(201,169,110,0.4))' }} />
           </div>
           <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 36, fontWeight: 300, color: 'var(--snow)', marginBottom: 8 }}>
-            Buat Akun Member
+            Buat Akun
           </h1>
           <p style={{ fontSize: 15, color: 'var(--mist)', fontStyle: 'italic' }}>
-            Akses eksklusif untuk anggota yang telah disetujui
+            Langkah pertama menuju Tenryu Circle
           </p>
         </div>
 
         <SignUp
-          afterSignUpUrl="/menunggu"
-          fallbackRedirectUrl="/menunggu"
           appearance={{
             elements: {
               rootBox: { width: '100%' },
